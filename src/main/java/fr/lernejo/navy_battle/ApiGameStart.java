@@ -20,8 +20,13 @@ public class ApiGameStart implements HttpHandler {
                 String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 System.out.println(requestBody);
                 if (requestBody.contains("id") && requestBody.contains("url") && requestBody.contains("message")){
-                    exchange.sendResponseHeaders(200, body.length());
+                    exchange.sendResponseHeaders(202, body.length());
                     os.write(body.getBytes());
+                } else {
+                    body= "400 (Bad Request)";
+                    exchange.sendResponseHeaders(400,  body.length());
+                    os.write(body.getBytes());
+
                 }
 
             } else {
