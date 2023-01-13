@@ -2,10 +2,8 @@ package fr.lernejo.navy_battle;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
 public class ApiGameFire implements HttpHandler {
     private final int port;
     private final String id;
@@ -27,7 +25,8 @@ public class ApiGameFire implements HttpHandler {
     }
     public void fire(String cell, HttpExchange exchange, OutputStream os) throws IOException{
         int l = ((int) cell.charAt(0))-'A';
-        int c = ((int) cell.charAt(0))-'0';
+        int c = ((int) cell.charAt(1))-'1';
+        System.out.println(Integer.toString(l) + " " + Integer.toString(c));
         if (this.sea[l][c] == 0){
             miss(exchange, os);
         } else if (this.sea[l][c] < 0){
@@ -51,11 +50,9 @@ public class ApiGameFire implements HttpHandler {
         }
         return false;
     }
-
     public void handle(HttpExchange exchange) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
             String requestQuery = exchange.getRequestURI().getQuery();
-            System.out.println(requestQuery);
             if (requestQuery.contains("cell=")){
                 fire(requestQuery.replace("cell=",""), exchange, os);
             } else {
@@ -78,11 +75,13 @@ public class ApiGameFire implements HttpHandler {
     }
     public void miss(HttpExchange exchange, OutputStream os) throws IOException{
         String body = "{ \"consequence\":\"miss\",\"shipLeft\":\"true\"}";
+        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
     public void hit(HttpExchange exchange, OutputStream os) throws IOException{
         String body = "{ \"consequence\":\"hit\",\"shipLeft\":\"true\"}";
+        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
@@ -91,6 +90,7 @@ public class ApiGameFire implements HttpHandler {
             for (int y = 0; y < 10; y++) {
                 if (this.sea[x][y] > 0) {
                     String body = "{ \"consequence\":\"sunk\",\"shipLeft\":\"true\"}";
+                    System.out.println(body);
                     exchange.sendResponseHeaders(200, body.length());
                     os.write(body.getBytes());
                     return;
@@ -98,6 +98,7 @@ public class ApiGameFire implements HttpHandler {
             }
         }
         String body = "{ \"consequence\":\"sunk\",\"shipLeft\":\"false\"}";
+        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
