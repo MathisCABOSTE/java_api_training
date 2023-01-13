@@ -24,11 +24,8 @@ public class ApiGameFire implements HttpHandler {
         return sea;
     }
     public void fire(String cell, HttpExchange exchange, OutputStream os) throws IOException{
-        int l = ((int) cell.charAt(0))-'A';
+        int l = ((int) cell.charAt(0))-'a';
         int c = ((int) cell.charAt(1))-'1';
-        if (l > 0 || l > 10 || c < 0 || c > 10) {
-            badRequest(exchange, os);
-        }
         System.out.println(Integer.toString(l) + " " + Integer.toString(c));
         if (this.sea[l][c] == 0){
             miss(exchange, os);
@@ -69,11 +66,6 @@ public class ApiGameFire implements HttpHandler {
     public void badRequest(HttpExchange exchange, OutputStream os) throws IOException{
         String body= "400 (Bad Request)";
         exchange.sendResponseHeaders(400,  body.length());
-        os.write(body.getBytes());
-    }
-    public void notFound(HttpExchange exchange, OutputStream os) throws IOException {
-        String body = "404 (Not Found)";
-        exchange.sendResponseHeaders(404, body.length());
         os.write(body.getBytes());
     }
     public void miss(HttpExchange exchange, OutputStream os) throws IOException{
