@@ -30,7 +30,7 @@ public class ApiGameFire implements HttpHandler {
     }
     public void fire(String cell, HttpExchange exchange, OutputStream os) throws IOException{
         int l = ((int) cell.charAt(0))-'A';
-        int c = ((int) cell.charAt(1))-'1';
+        int c = Integer.parseInt(cell.substring(1))-1;
         System.out.println(Integer.toString(l) + " " + Integer.toString(c));
         if (this.sea[l][c] == 0){ miss(exchange, os);
         } else if (this.sea[l][c] < 0){ hit(exchange, os);
