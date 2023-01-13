@@ -7,9 +7,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 public class ApiGameStart implements HttpHandler {
-    int port;
-    String id;
-    public void init(int port, String id){
+    private final int port;
+    private final String id;
+    public ApiGameStart(int port, String id){
         this.port = port;
         this.id = id;
     }

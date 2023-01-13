@@ -15,8 +15,7 @@ public class Launcher {
         System.out.println("Creating context '/ping' ...");
         server.createContext("/ping", new Ping());
         System.out.println("Creating context '/api/game/start' ...");
-        ApiGameStart apiGameStart = new ApiGameStart();
-        apiGameStart.init(port, id);
+        ApiGameStart apiGameStart = new ApiGameStart(port,id);
         server.createContext("/api/game/start", apiGameStart);
         System.out.println("Setting executor ...");
         server.setExecutor(null);
