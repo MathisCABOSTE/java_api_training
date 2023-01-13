@@ -14,30 +14,32 @@ public class ApiGameStart implements HttpHandler {
         this.id = id;
     }
     public void handle(HttpExchange exchange) throws IOException {
-        String body = "{ \"id\":\""+ this.id + "\",\"url\":\"http://localhost:"+ Integer.toString(this.port) +"\",\"message\": \"Get ready for the battle !\"}";
         try (OutputStream os = exchange.getResponseBody()) {
             if (exchange.getRequestMethod().equals("POST")){
                 String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 System.out.println(requestBody);
-                if (requestBody.contains("id") && requestBody.contains("url") && requestBody.contains("message")){
-                    exchange.sendResponseHeaders(202, body.length());
-                    os.write(body.getBytes());
-                } else {
-                    body= "400 (Bad Request)";
-                    exchange.sendResponseHeaders(400,  body.length());
-                    os.write(body.getBytes());
-
-                }
-
-            } else {
-                body = "404 (Not Found)";
-                exchange.sendResponseHeaders(404,body.length());
-                os.write(body.getBytes());
-            }
-
+                if (requestBody.contains("id") && requestBody.contains("url") && requestBody.contains("message")){gameStart(exchange, os);}
+                else {badRequest(exchange, os);}
+            } else {notFound(exchange, os);}
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
+
+    }
+    public void badRequest(HttpExchange exchange, OutputStream os) throws IOException{
+        String body= "400 (Bad Request)";
+        exchange.sendResponseHeaders(400,  body.length());
+        os.write(body.getBytes());
+    }
+    public void notFound(HttpExchange exchange, OutputStream os) throws IOException {
+        String body = "404 (Not Found)";
+        exchange.sendResponseHeaders(404, body.length());
+        os.write(body.getBytes());
+    }
+    public void gameStart(HttpExchange exchange, OutputStream os) throws IOException{
+        String body = "{ \"id\":\""+ this.id + "\",\"url\":\"http://localhost:"+ Integer.toString(this.port) +"\",\"message\": \"Get ready for the battle !\"}";
+        exchange.sendResponseHeaders(202, body.length());
+        os.write(body.getBytes());
     }
 }
