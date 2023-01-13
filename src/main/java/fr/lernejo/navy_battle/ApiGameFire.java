@@ -26,11 +26,11 @@ public class ApiGameFire implements HttpHandler {
     public void fire(String cell, HttpExchange exchange, OutputStream os) throws IOException{
         int l = ((int) cell.charAt(0))-'A';
         int c = ((int) cell.charAt(1))-'1';
-        if (c < 0){
+        if (l < 0){
             troba(exchange, os);
             return;
         }
-        if (c > 9) {
+        if (l > 9) {
             troho(exchange, os);
             return;
         }
