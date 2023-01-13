@@ -1,7 +1,5 @@
 package fr.lernejo.navy_battle;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 public class ApiGameFire implements HttpHandler {
@@ -19,32 +17,26 @@ public class ApiGameFire implements HttpHandler {
             {1,1,1,1,1,0,0,0,0,0},
             {0,0,2,2,2,2,0,0,0,0},
             {3,3,3,0,0,4,4,4,0,0},
-            {0,0,0,5,5,0,0,0,0,0}
+            {0,0,0,5,5,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0}
+
         };
         return sea;
     }
     public void fire(String cell, HttpExchange exchange, OutputStream os) throws IOException{
         int l = ((int) cell.charAt(0))-'A';
         int c = ((int) cell.charAt(1))-'1';
-        if (l < 0){
-            troba(exchange, os);
-            return;
-        }
-        if (l > 9) {
-            troho(exchange, os);
-            return;
-        }
         System.out.println(Integer.toString(l) + " " + Integer.toString(c));
-        if (this.sea[l][c] == 0){
-            miss(exchange, os);
-        } else if (this.sea[l][c] < 0){
-            hit(exchange, os);
-        } else {
-            this.sea[l][c] *= -1;
-            if (isSunk(this.sea[l][c])){
-                sunk(exchange, os);
-            } else {
-                hit(exchange, os);
+        if (this.sea[l][c] == 0){ miss(exchange, os);
+        } else if (this.sea[l][c] < 0){ hit(exchange, os);
+        } else { this.sea[l][c] *= -1;
+            if (isSunk(this.sea[l][c])){ sunk(exchange, os);
+            } else { hit(exchange, os);
             }
         }
     }
@@ -76,25 +68,13 @@ public class ApiGameFire implements HttpHandler {
         exchange.sendResponseHeaders(400,  body.length());
         os.write(body.getBytes());
     }
-    public void troba(HttpExchange exchange, OutputStream os) throws IOException{
-        String body= "400 (troba)";
-        exchange.sendResponseHeaders(400,  body.length());
-        os.write(body.getBytes());
-    }
-    public void troho(HttpExchange exchange, OutputStream os) throws IOException{
-        String body= "400 (troho)";
-        exchange.sendResponseHeaders(404,  body.length());
-        os.write(body.getBytes());
-    }
     public void miss(HttpExchange exchange, OutputStream os) throws IOException{
         String body = "{ \"consequence\":\"miss\",\"shipLeft\":\"true\"}";
-        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
     public void hit(HttpExchange exchange, OutputStream os) throws IOException{
         String body = "{ \"consequence\":\"hit\",\"shipLeft\":\"true\"}";
-        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
@@ -103,7 +83,6 @@ public class ApiGameFire implements HttpHandler {
             for (int y = 0; y < 10; y++) {
                 if (this.sea[x][y] > 0) {
                     String body = "{ \"consequence\":\"sunk\",\"shipLeft\":\"true\"}";
-                    System.out.println(body);
                     exchange.sendResponseHeaders(200, body.length());
                     os.write(body.getBytes());
                     return;
@@ -111,7 +90,6 @@ public class ApiGameFire implements HttpHandler {
             }
         }
         String body = "{ \"consequence\":\"sunk\",\"shipLeft\":\"false\"}";
-        System.out.println(body);
         exchange.sendResponseHeaders(200, body.length());
         os.write(body.getBytes());
     }
