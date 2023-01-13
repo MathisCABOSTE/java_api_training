@@ -12,11 +12,12 @@ import java.util.UUID;
 public class Launcher {
     public static void createContexts(int port, String id) throws  IOException{
         var server = HttpServer.create(new InetSocketAddress(port), 0);
-        System.out.println("Creating context '/ping' ...");
+        System.out.println("Creating contexts");
         server.createContext("/ping", new Ping());
-        System.out.println("Creating context '/api/game/start' ...");
         ApiGameStart apiGameStart = new ApiGameStart(port,id);
         server.createContext("/api/game/start", apiGameStart);
+        ApiGameFire apiGameFire = new ApiGameFire(port,id);
+        server.createContext("/api/game/fire", apiGameFire);
         System.out.println("Setting executor ...");
         server.setExecutor(null);
         System.out.println("Starting server ...");
