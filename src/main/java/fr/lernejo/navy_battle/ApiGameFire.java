@@ -34,28 +34,33 @@ public class ApiGameFire implements HttpHandler {
             hit(exchange, os);
         } else {
             this.sea[l][c] *= -1;
-            for (int x=0; x < 10; x++) {
-                for (int y=0; y < 10; y++){
-                    if (this.sea[x][y] == this.sea[l][c]*(-1)){
-                        hit(exchange, os);
-                        return;
-                    }
+            if (isSunk(this.sea[l][c])){
+                sunk(exchange, os);
+            } else {
+                hit(exchange, os);
+            }
+        }
+    }
+    public boolean isSunk(int target) {
+        for (int x=0; x < 10; x++) {
+            for (int y=0; y < 10; y++){
+                if (this.sea[x][y] == target*(-1)){
+                    return true;
                 }
             }
-            sunk(exchange, os);
         }
+        return false;
     }
 
     public void handle(HttpExchange exchange) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
-            if (exchange.getRequestMethod().equals("GET")){
-                String requestQuery = exchange.getRequestURI().getQuery();
-                System.out.println(requestQuery);
-                if (requestQuery.contains("cell=")){
-                    fire(requestQuery.replace("cell=",""), exchange, os);
-                }
-                else {badRequest(exchange, os);}
-            } else {notFound(exchange, os);}
+            String requestQuery = exchange.getRequestURI().getQuery();
+            System.out.println(requestQuery);
+            if (requestQuery.contains("cell=")){
+                fire(requestQuery.replace("cell=",""), exchange, os);
+            } else {
+                badRequest(exchange, os);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
