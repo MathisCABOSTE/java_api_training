@@ -78,12 +78,12 @@ public class ApiGameFire implements HttpHandler {
     }
     public void troba(HttpExchange exchange, OutputStream os) throws IOException{
         String body= "400 (troba)";
-        exchange.sendResponseHeaders(10,  body.length());
+        exchange.sendResponseHeaders(400,  body.length());
         os.write(body.getBytes());
     }
     public void troho(HttpExchange exchange, OutputStream os) throws IOException{
         String body= "400 (troho)";
-        exchange.sendResponseHeaders(999,  body.length());
+        exchange.sendResponseHeaders(404,  body.length());
         os.write(body.getBytes());
     }
     public void miss(HttpExchange exchange, OutputStream os) throws IOException{
